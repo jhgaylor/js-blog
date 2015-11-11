@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Common Javascript Idioms by jhgaylor</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Common Javascript Idioms</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          <a href="https://github.com/jhgaylor/js-blog/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/jhgaylor/js-blog/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/jhgaylor/js-blog" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p>Javascript has a huge ecosystem. </p>
+
+<p><img src="http://i.imgur.com/ctMWXCP.png" alt="At the time of writing there were 201,625 packages on npmjs.org"></p>
+
+<p>At the time of writing there are 201,625 packages on the <a href="https://www.npmjs.com/">Node Package Manager (NPM) website</a> </p>
+
+<p>With a catalog of hundreds of thousands of libraries available to <a href="https://nodejs.org">Node.js</a> developers, how do you make sure it's easy to get started with any of those libraries? </p>
+
+<p><strong>By speaking the same language!</strong></p>
+
+<p>There are a handful of patterns so common in Javascript that you'll find them all in many libraries and at least one, and often many in <em>almost every library</em>.</p>
+
+<h2>
+<a id="options-pojo" class="anchor" href="#options-pojo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options POJO</h2>
+
+<p>Often, you'll want to be able to configure a tool. When starting the Mocha test runner you might want to set the UI and the reporter. You can do that using a Plain Old Javascript Object. In JS an object is most commonly created using the literal syntax <code>{}</code> but can also be created using <code>new Object()</code> and is basically just a collection of "key/value pairs". The key is used to lookup a specified value and can be almost any object! The value can be anything you think to put in it.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// include the mocha library (which was installed with npm)</span>
+<span class="pl-k">var</span> Mocha <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>mocha<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// create an instance of the Mocha Test Runner </span>
+<span class="pl-c">// Use an options object </span>
+<span class="pl-k">var</span> mocha <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Mocha</span>({
+    <span class="pl-c">// the key is ui and the value is 'bdd'</span>
+    ui<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>bdd<span class="pl-pds">'</span></span>,
+    <span class="pl-c">// the key is reporter and the value is 'list'</span>
+    reporter<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>list<span class="pl-pds">'</span></span>
+});</pre></div>
+
+<p>AKA</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// include the mocha library (which was installed with npm)</span>
+<span class="pl-k">var</span> Mocha <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>mocha<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// define the mocha options POJO</span>
+<span class="pl-k">var</span> mochaOptions <span class="pl-k">=</span> {
+  ui<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>bdd<span class="pl-pds">'</span></span>,
+  reporter<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>list<span class="pl-pds">'</span></span>
+};
+
+<span class="pl-c">// create an instance of the Mocha Test Runner </span>
+<span class="pl-c">// Use an options object </span>
+<span class="pl-k">var</span> mocha <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Mocha</span>(mochaOptions);</pre></div>
+
+<p>Tons of libraries use this pattern including</p>
+
+<p><strong>jQuery</strong></p>
+
+<div class="highlight highlight-source-js"><pre>$.ajax({
+  url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>http://example.com<span class="pl-pds">'</span></span>,
+  type<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>GET<span class="pl-pds">'</span></span>,
+  async<span class="pl-k">:</span> <span class="pl-c1">true</span>
+});</pre></div>
+
+<p><strong>Request</strong></p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+
+request({
+  method<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>GET<span class="pl-pds">'</span></span>,
+  url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>http://example.com<span class="pl-pds">'</span></span>
+});</pre></div>
+
+<p><strong>Twilio</strong></p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> Twilio <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>twilio<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> client <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Twilio</span>(auth, creds);
+
+client.sendMessage({
+    to<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>+16515556677<span class="pl-pds">'</span></span>,
+    from<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>+14506667788<span class="pl-pds">'</span></span>,
+    body<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>word to your mother.<span class="pl-pds">'</span></span>
+});</pre></div>
+
+<p>By using an object to pass named arguments into a function, an arbitrary number of required and optional fields can be added without changing the signature of the function which reduces the chances that code relying on the modified function will break.</p>
+
+<p>Take for example the process of searching for a red car with four wheels using some code your coworker wrote:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> cars <span class="pl-k">=</span> findCars(<span class="pl-c1">4</span>, <span class="pl-s"><span class="pl-pds">"</span>red<span class="pl-pds">"</span></span>);</pre></div>
+
+<p>this works for a while but things get harder when you want to want to find a compact sedan made by one of the brands you like</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> cars <span class="pl-k">=</span> findCars(<span class="pl-c1">4</span>, <span class="pl-s"><span class="pl-pds">'</span>red<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>sedan<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>compact<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>tesla<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>and things get down right impossible to read when we want to leave out search options and just find cars by tesla.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> cars <span class="pl-k">=</span> findCars(<span class="pl-c1">null</span>, <span class="pl-c1">null</span>, <span class="pl-c1">null</span>, <span class="pl-c1">null</span>, <span class="pl-s"><span class="pl-pds">'</span>tesla<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>That code i a mess to maintain, and it gets worse when your coworker wants to make it possible to search for just those cars that have rear wheel drive.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> cars <span class="pl-k">=</span> findCars(<span class="pl-c1">4</span>, <span class="pl-s"><span class="pl-pds">'</span>red<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>sedan<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>compact<span class="pl-pds">'</span></span>, <span class="pl-c1">true</span>, <span class="pl-s"><span class="pl-pds">'</span>tesla<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>Notice that by adding this feature to the findCars function, your coworker has broken your old code! </p>
+
+<p>Future you will also be wondering what that <code>true</code> means when you come back to it in a couple of months.</p>
+
+<p><code>findCars</code> could instead be written to take it's arguments using the options object and the rear wheel drive search features wouldn't have introduced a bug and future you will know what everything means.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> cars <span class="pl-k">=</span> findCars({
+  doors<span class="pl-k">:</span> <span class="pl-c1">4</span>,
+  color<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>red<span class="pl-pds">'</span></span>,
+  bodyStyle<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>sedan<span class="pl-pds">'</span></span>,
+  bodySize<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>compact<span class="pl-pds">'</span></span>,
+  manufacturer<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>tesla<span class="pl-pds">'</span></span>,
+  rearDriveOnly<span class="pl-k">:</span> <span class="pl-c1">true</span>
+});</pre></div>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> cars <span class="pl-k">=</span> findCars({
+  color<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>red<span class="pl-pds">'</span></span>,
+  bodyStyle<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>sedan<span class="pl-pds">'</span></span>,
+  manufacturer<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>tesla<span class="pl-pds">'</span></span>
+});</pre></div>
+
+<p>You'll notice that the options object allows you to call the function many different ways. It's a way in javascript to provide multiple signatures for a function by expecting different options depending on which action should happen. Other languages allow overloading the function signature for directly.</p>
+
+<p><strong>Note:</strong> You might have noticed that a POJO looks similar to JSON formatted text. [[elaborate]]</p>
+
+<h2>
+<a id="first-class-functions" class="anchor" href="#first-class-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>First Class Functions</h2>
+
+<p>In Javascript, functions are "First Class Citizens". Anything that can be done with any other variable in Javascript can be done with functions. In fact, functions are just callable objects. ((Aside: Everything in Javascript decends from a common ancestor [[prove it!]]))</p>
+
+<p>Two properties of functions in particular should be pointed out. They are important because each enables a common pattern in Javascript.</p>
+
+<ul>
+<li>A function can be passed into another function as a parameter</li>
+<li>A function can be returned from another function</li>
+</ul>
+
+<p><strong>Callbacks</strong></p>
+
+<p>The first allows for "callbacks", which is a way to allow other code to execute and call the "callback" function when it is done.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> fs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>);
+fs.readFile(<span class="pl-s"><span class="pl-pds">'</span>sample.txt<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">err</span>, <span class="pl-smi">data</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">"</span>I'm done reading the file so I'm running your callback<span class="pl-pds">"</span></span>, err, data);
+});</pre></div>
+
+<p>In <code>Node.js</code>, callbacks are traditionally called with a first parameter of <code>err</code>. This value will be <code>null</code> if there is not an error and checking for an error is a common first step when writing a <code>node.js</code> style callback. Let's dress up that first example a bit.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> fs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>);
+fs.readFile(<span class="pl-s"><span class="pl-pds">'</span>sample.txt<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">err</span>, <span class="pl-smi">data</span>) {
+  <span class="pl-k">if</span> (err) {
+    <span class="pl-en">console</span>.<span class="pl-c1">error</span>(<span class="pl-s"><span class="pl-pds">"</span>There was an error reading sample.txt<span class="pl-pds">"</span></span>, err);
+    <span class="pl-k">return</span>;
+  }
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">"</span>The contents of sample.txt is: <span class="pl-pds">"</span></span>, data);
+});</pre></div>
+
+<p><strong>Closures</strong></p>
+
+<p>The second powers "closures". A closure is best explained first by example.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">makeGreeter</span> (<span class="pl-smi">greeting</span>) {
+  <span class="pl-k">return</span> <span class="pl-k">function</span> <span class="pl-en">greeter</span> (<span class="pl-smi">name</span>) {
+     <span class="pl-en">console</span>.<span class="pl-c1">log</span>(greeting <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>, <span class="pl-pds">"</span></span> <span class="pl-k">+</span> name);
+  }
+}
+
+<span class="pl-k">var</span> greeter <span class="pl-k">=</span> makeGreeter(<span class="pl-s"><span class="pl-pds">"</span>Hello<span class="pl-pds">"</span></span>);
+greeter(<span class="pl-s"><span class="pl-pds">"</span>World<span class="pl-pds">"</span></span>);
+<span class="pl-c">// outputs:</span>
+<span class="pl-c">// Hello World</span></pre></div>
+
+<p>In the example above, the value of <code>greeting</code> that was passed as an argument to <code>makeGreeter</code> is available to the greeter even though <code>greeting</code> seems locked into the scope of <code>makeGreeter</code>. [[Need more closure love]]</p>
+
+<h2>
+<a id="chaining" class="anchor" href="#chaining" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chaining</h2>
+
+<p>Chaining is a mechanism by which a developer can call multiple methods, sequentially, on an object without much boiler plate.</p>
+
+<p>Chaining works because each method on an object will return the object. Let's look at an example</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">makeApple</span>() {
+    <span class="pl-k">function</span> <span class="pl-en">setColor</span> (<span class="pl-smi">color</span>) {
+        apple.<span class="pl-c1">color</span> <span class="pl-k">=</span> color;
+        <span class="pl-k">return</span> apple;
+    }
+
+    <span class="pl-k">function</span> <span class="pl-en">setSize</span> (<span class="pl-smi">size</span>) {
+        apple.<span class="pl-c1">size</span> <span class="pl-k">=</span> size;
+        <span class="pl-k">return</span> apple;
+    }
+
+    <span class="pl-k">function</span> <span class="pl-en">setWeight</span> (<span class="pl-smi">weight</span>) {
+        apple.weight <span class="pl-k">=</span> weight;
+        <span class="pl-k">return</span> apple;
+    }
+    <span class="pl-c">// hoisting will ensure this is declared in time.</span>
+    <span class="pl-k">var</span> apple <span class="pl-k">=</span> {
+        setColor<span class="pl-k">:</span> setColor,
+        setSize<span class="pl-k">:</span> setSize,
+        setWeight<span class="pl-k">:</span> setWeight
+    };
+    <span class="pl-k">return</span> apple;
+}
+
+<span class="pl-k">var</span> apple <span class="pl-k">=</span> makeApple();
+<span class="pl-c">// make a large red apple of weight 8 ounces</span>
+apple.setColor(<span class="pl-s"><span class="pl-pds">'</span>red<span class="pl-pds">'</span></span>).setSize(<span class="pl-s"><span class="pl-pds">'</span>large<span class="pl-pds">'</span></span>).setWeight(<span class="pl-s"><span class="pl-pds">'</span>8 oz<span class="pl-pds">'</span></span>);
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(apple);
+<span class="pl-c">// {color: 'red', size: 'large', weight: '8 oz' ...}</span></pre></div>
+
+<p><a href="http://jquery.com/">jQuery</a> is notorious for chaining.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// select an element with id="p1"</span>
+$(<span class="pl-s"><span class="pl-pds">"</span>#p1<span class="pl-pds">"</span></span>)
+  <span class="pl-c">// set the element's color to red</span>
+  .css(<span class="pl-s"><span class="pl-pds">"</span>color<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>red<span class="pl-pds">"</span></span>)
+  <span class="pl-c">// slide the element up over a 2 second duration</span>
+  .slideUp(<span class="pl-c1">2000</span>)
+  <span class="pl-c">// slide the element down over a 2 second duration, but only after the slideUp is finished.</span>
+  .slideDown(<span class="pl-c1">2000</span>);</pre></div>
+
+<p><a href="https://github.com/visionmedia/supertest">SuperTest</a> also leverages chaining to make writing tests more pleasant.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>supertest<span class="pl-pds">'</span></span>)
+  , express <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>express<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">var</span> app <span class="pl-k">=</span> express();
+
+app.get(<span class="pl-s"><span class="pl-pds">'</span>/user<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">req</span>, <span class="pl-smi">res</span>){
+  res.<span class="pl-c1">send</span>(<span class="pl-c1">200</span>, { name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>tobi<span class="pl-pds">'</span></span> });
+});
+
+request(app)
+  .get(<span class="pl-s"><span class="pl-pds">'</span>/user<span class="pl-pds">'</span></span>)
+  .expect(<span class="pl-s"><span class="pl-pds">'</span>Content-Type<span class="pl-pds">'</span></span>,<span class="pl-sr"> <span class="pl-pds">/</span>json<span class="pl-pds">/</span></span>)
+  .expect(<span class="pl-s"><span class="pl-pds">'</span>Content-Length<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>20<span class="pl-pds">'</span></span>)
+  .expect(<span class="pl-c1">200</span>)
+  .end(<span class="pl-k">function</span>(<span class="pl-smi">err</span>, <span class="pl-smi">res</span>){
+    <span class="pl-k">if</span> (err) {
+        <span class="pl-k">throw</span> err;
+    }
+  });</pre></div>
+
+<p>In the example above, the request is instructed what url to call and with what http method, the <code>Content-Type</code> header's expected value is defined, the <code>Content-Length</code> header's expected value is defined, the expected <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">HTTP Status Code</a> is declared and the request will bubble any errors it throws.</p>
+
+<h1>
+<a id="go-do-a-thing" class="anchor" href="#go-do-a-thing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Go Do a Thing</h1>
+
+<p>Knowing the common patterns that other developers use when writing their libraries should prepare you to consume them. There are also other concepts that build on these other common patterns that you're now better prepared to tackle. (Such as <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promises</a>)</p>
+
+<p>The best way to solidify these concepts is through repetition. Grab a package from <a href="https://npmjs.org">NPM</a> and hack on something for some practice.</p>
+      </section>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-63026446-2");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
